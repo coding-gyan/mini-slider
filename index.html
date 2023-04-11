@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mini Slider</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="slider__container" id="sliderContainer">
+      <div class="slide" id="slide">
+        <div class="item">
+          <img src="/images/1.jpg" alt="" />
+        </div>
+        <div class="item">
+          <img src="/images/2.jpg" alt="" />
+        </div>
+        <div class="item">
+          <img src="/images/3.jpg" alt="" />
+        </div>
+        <div class="item">
+          <img src="/images/4.jpg" alt="" />
+        </div>
+      </div>
+      <button id="prev" class="prevBtn">
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+      <button id="next" class="nextBtn">
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+
+    <script>
+      const initSlider = ($ele) => {
+        const sliderContainer = document.querySelector(`#${$ele}`);
+        const slide = document.querySelector(`#${$ele} #slide`);
+        const items = document.querySelectorAll(`#${$ele} #slide .item`);
+        let currentSlide = 0;
+        
+        items[currentSlide].classList.add("activeSlide");
+
+        let itemWidth = items[0].clientWidth;
+
+        sliderContainer.style.width = itemWidth + "px";
+        slide.style.width = items.length * itemWidth + "px";
+        slide.style.transform = "translateY(0px)";
+
+        const next = document.querySelector("#next");
+        const prev = document.querySelector("#prev");
+
+        const toggleClass = (condition, elem, className) => {
+          condition
+            ? elem.classList.add(className)
+            : elem.classList.remove(className);
+        };
+
+        const handlePrevNextBtn = () => {
+          toggleClass(currentSlide == 0, prev, "disabled");
+          toggleClass(currentSlide == items.length - 1, next, "disabled");
+        };
+
+        handlePrevNextBtn();
+
+        const handleSlide = (condition, slideElem, event) => {
+          var slideTransformValue = slideElem.style.transform;
+          var translateXValue = slideTransformValue.replace(/[^\d.]/g, "");
+
+          if (condition && event == "next") {
+            currentSlide += 1;
+
+            slideElem.style.transform = `translateX(-${
+              +translateXValue + itemWidth
+            }px)`;
+          } else if (condition && event == "prev") {
+            currentSlide -= 1;
+
+            slideElem.style.transform = `translateX(-${
+              +translateXValue - itemWidth
+            }px)`;
+          }
+          items.forEach((e) => e.classList.remove("activeSlide"));
+          items[currentSlide].classList.add("activeSlide");
+        };
+
+        next.addEventListener("click", () => {
+          handleSlide(currentSlide != items.length - 1, slide, "next");
+          handlePrevNextBtn();
+        });
+
+        prev.addEventListener("click", () => {
+          handleSlide(currentSlide != 0, slide, "prev");
+          handlePrevNextBtn();
+        });
+      };
+
+      initSlider("sliderContainer");
+    </script>
+  </body>
+</html>
